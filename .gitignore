@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+venv/
+
+# Project archives
+*.zip
+*.rar
+
+# IDE
+.vscode/
+.idea/
+
+# Personal financial data
+data/
+
+Images/
+sandbox.py
+main.py
