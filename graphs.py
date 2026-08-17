@@ -1,47 +1,74 @@
 import plotly.express as px
 import pandas as pd
 
-def pie_chart(df,month):
-    type = 'pie'
-    formatted_month = pd.to_datetime(month).strftime("%B - %Y")
 
-    fig = px.pie(df,
+
+
+def pie_chart(df,month):
+    formatted_month = pd.to_datetime(month).strftime("%B - %Y")
+    df = df[df[month] > 0]
+    total = df[month].sum()
+    expense_month_df = df[['Category',month]]
+
+    fig = px.pie(expense_month_df,
         values=month, 
         names='Category',
-        title= f"Expenses by category - {formatted_month}",
+        title= f'{formatted_month}',
         color='Category',
+        color_discrete_sequence=px.colors.cyclical.IceFire
         )
     
     fig.update_traces(
-        textposition='inside', 
-        texttemplate='%{percent:.1%}<br>R$ %{value:,.2f}',
+        textposition='auto', 
+        textinfo='label+percent',
         hovertemplate='%{label}<br>%{percent}',
-        marker=dict(line=dict(color='#000000', width=2)),
+        hole=0.5,
+        automargin=True,
         textfont=dict(
         family="Arial, sans-serif",  
-        size=22,                    
+        size=20,                    
         color="white"                
-        )
+        ),
+        
+        insidetextorientation='radial',
+        rotation=90
     )
 
-    update_chart_layout(fig)
+    fig.add_annotation(
+    x=0.5,
+    y=0.5,
+    text=f'Total Expenses<br><b>R$ {total:,.2f}</b>',
+    showarrow=False,
+    font=dict(size=24)
+    )
+
+    base_chart_layout(fig)
+
+    fig.update_layout(    
+        showlegend=False,
+        height=700
+    )
+
     return fig
 
 
 
 def expense_comparison_chart(df):
-    type='3 months bar'
-    chart_df = df.copy()
-
+    chart_df = df.copy()    
     month_columns = [str(header) for header in chart_df.columns if header != 'Category']
-    
+    formatted_columns = {
+    month: pd.to_datetime(month).strftime("%B - %Y")
+    for month in month_columns
+}
+    chart_df = chart_df.rename(columns=formatted_columns)
+    month_columns = list(formatted_columns.values())
 
     fig = px.bar(
         chart_df,
         x="Category",
         y=month_columns,
         barmode="group",
-        title="Monthly expenses by category",
+        title="Expense comparison",
         labels={
             "Category": "Category",
             "value": "",
@@ -58,8 +85,13 @@ def expense_comparison_chart(df):
         tickformat=",.2f",
         showgrid=True
     )
-     
-    update_chart_layout(fig)
+
+    fig.update_layout(
+    legend_title_text="Month",
+    bargap=0.2,
+    height=500
+)
+    base_chart_layout(fig)
     return fig
 
 def monthly_evolution_chart(series):
@@ -79,14 +111,28 @@ def monthly_evolution_chart(series):
         "Formatted Month": "Month"
     }
     )
-    update_chart_layout(fig)
+    base_chart_layout(fig)
 
     fig.update_yaxes(
         tickprefix="R$ ",
         tickformat=",.2f",
-        showgrid=True        
-
+        showgrid=True,
+        gridcolor="rgba(255,255,255,0.08)" ,
+        rangemode='tozero',
     )
+
+    fig.update_traces(
+    hovertemplate=(
+        "<b>%{x}</b><br>"
+        "Value: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
+)
+
+    fig.update_layout(
+    height=420
+)
+    
     return fig
 
 def month_comparison_chart(df):
@@ -97,13 +143,18 @@ def month_comparison_chart(df):
                  orientation='h',
                  title= 'Difference (%)')
 
+    fig.update_layout(
+    margin=dict(t=20),
+    height=380
+)
+
     return fig
 
      
 
 
 
-def update_chart_layout(fig):
+def base_chart_layout(fig):
         fig.update_layout(
         separators=',.',
         title_x=0.5,
@@ -111,7 +162,8 @@ def update_chart_layout(fig):
         title_font=dict(
         family="Arial, sans-serif",
         size=24,            
-        color="#2c3e50"     
+        color="#2c3e50"
+             
         )
     )
 

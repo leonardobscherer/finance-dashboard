@@ -1,6 +1,6 @@
 
 salary_senders = ['randstad']
-payback = ['gabriel marques berto','guilherme zanini da silva', 'vinicius zanini da silva','amanda valéria da silva gomes','gabriel araujo de souza','ayman guilherme sehn muhamad ali','luan de oliveira müller','julia low eizerik',]
+payback = ['gabriel marques berto','guilherme zanini da silva', 'vinicius zanini da silva','amanda valéria da silva gomes','gabriel araujo de souza','ayman guilherme sehn muhamad ali','luan de oliveira müller','julia low eizerik','jean lucas']
 tax_reimbursement = ['receita federal']
 investment_withdraw = ['resgate']
 investment_deposit = ['aplicação']

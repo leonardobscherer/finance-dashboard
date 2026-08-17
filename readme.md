@@ -6,6 +6,10 @@ The project started as a way to analyze my own bank statements and evolved into 
 
 > The repository does not contain real financial data. Personal bank statements are excluded from version control.
 
+> link for the application on Streamlit Community Cloud:
+
+https://finance-dashboard-fgpnipezbdyxs98uhedwqe.streamlit.app
+
 ## Features
 
 ### Financial Indicators

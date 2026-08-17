@@ -102,6 +102,14 @@ def create_indicators(df):
     "invested" : invested
 }
 
+def prepare_indicators(indicators,selected_month):
+    income = indicators["income"].loc[selected_month].round(2)
+    expense = indicators["expense"].loc[selected_month].round(2)
+    remaining = indicators["remaining"].loc[selected_month].round(2)
+    invested = indicators["invested"].loc[selected_month].round(2)
+
+    return income,expense,remaining,invested
+
 def investment_evolution(df):
     months = sorted(df["Month"].unique())
     
@@ -134,4 +142,23 @@ def compare_months(df,first_month,second_month):
             "Difference (%)": difference,
             })
 
-        return comparison
+        return comparison.reset_index()
+
+def prepare_df_for_plotting(df,selected_months):
+    monthly_totals = df[selected_months].sum()
+    average_spend = monthly_totals.mean()
+    highest_spend_month = pd.to_datetime(monthly_totals.idxmax()).strftime("%B - %Y")
+    highest_spend_value = monthly_totals.max().round(2)
+
+    return monthly_totals, average_spend, highest_spend_month, highest_spend_value
+
+def create_transactions_df(df,selected_month,transactions_selected_categories):
+        transactions_df = df[['Data','Descrição','Valor','Category','Month']]
+        transactions_df = transactions_df[transactions_df['Month'] == selected_month]
+        transactions_df = transactions_df[transactions_df['Category'].isin(transactions_selected_categories)]
+        transactions_df = transactions_df[["Data", "Descrição", "Valor", "Category"]]
+        
+        transactions_df = transactions_df.sort_values(by="Data",ascending=True)
+
+        return transactions_df
+                    
